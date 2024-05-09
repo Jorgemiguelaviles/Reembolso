@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import enviarDadosParaBackend from '../../hooks/functions/submitbackend/submitbackend';
 import axios from 'axios';
+import { useUser } from '../../userContext';
 
 const FormularioModal = ({ show, handleClose, updateList }) => {
     const [novaDespesa, setNovaDespesa] = useState({
@@ -13,6 +14,7 @@ const FormularioModal = ({ show, handleClose, updateList }) => {
         qnt_editavel:''
     });
 
+    const { domain } = useUser();
     const [envioSucesso, setEnvioSucesso] = useState(false);
     const [mostrarErro, setMostrarErro] = useState(false);
     const [camposVazios, setCamposVazios] = useState([]);
@@ -68,7 +70,7 @@ const FormularioModal = ({ show, handleClose, updateList }) => {
             return;
         }
 
-        const rotaBack = 'http://10.0.0.183:5178/despesascreate';
+        const rotaBack = `${domain}despesascreate`;
         try {
             const dadosResposta = await enviarDadosParaBackend(rotaBack, dadosDespesa);
             console.log('Dados da resposta:', dadosResposta);

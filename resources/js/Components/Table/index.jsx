@@ -3,8 +3,10 @@ import { Table, Button } from 'react-bootstrap';
 import FormularioModal from '../Formularios/index';
 import Formularioedit from '../Formularios/Edit';
 import axios from 'axios';
+import { useUser } from '../../userContext';
 
 function Despesas() {
+    const { domain } = useUser();
     const [items, setItems] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -39,7 +41,7 @@ function Despesas() {
 
     const fetchData = async () => {
         try {
-            const response = await fetch('http://10.0.0.183:5178/despesas');
+            const response = await fetch(`${domain}despesas`);
             if (!response.ok) {
                 throw new Error('Erro ao buscar despesas');
             }
@@ -63,7 +65,7 @@ function Despesas() {
             );
             console.log('Item atualizado localmente:', updatedItems.find(item => item.id === id));
 
-            const response = await axios.post(`http://10.0.0.183:5178/despesas/${id}/status`, { active: itemToUpdate.active ? 0 : 1 }, {
+            const response = await axios.post(`${domain}despesas/${id}/status`, { active: itemToUpdate.active ? 0 : 1 }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

@@ -10,6 +10,7 @@ import { Card } from 'react-bootstrap';
 
 
 function Acompanhamento() {
+    const { domain } = useUser();
     const searchParams = new URLSearchParams(location.search);
     const parametro = searchParams.get('cabecalhoId');
     const [solicitacoes, setSolicitacoes] = useState([]);
@@ -20,7 +21,7 @@ function Acompanhamento() {
 
 
     const encaminhar = useEncaminhar();
-    const url = `http://10.0.0.183:5178/getDatabaseBody?cabecalhoId=${parametro}`;
+    const url = `${domain}getDatabaseBody?cabecalhoId=${parametro}`;
     const [filtros, setFiltros] = useState({
         filtrosStatus: "",
         id: parametro,

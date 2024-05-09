@@ -42,6 +42,7 @@ const Loginpage = ({ imageMaxWidth = "200px", imageMaxHeight = "160px" }) => {
     const handleFormSubmit = async (event) => {
         event.preventDefault();
         setmsg("");
+	
 
         // Verifica se os campos estão preenchidos
         if (!Usuario || !Senha) {
@@ -57,7 +58,8 @@ const Loginpage = ({ imageMaxWidth = "200px", imageMaxHeight = "160px" }) => {
 
         // Se todos os campos estiverem preenchidos, continue com o envio
         try {
-            const response = await enviarDadosParaBackend("/datalogin", { Usuario, Senha, captcha });
+            const response = await enviarDadosParaBackend("http://162.240.102.146:5170/datalogin", { Usuario, Senha, captcha });
+
 
             if (response && response.data && response.data.length > 1 && response.data[1]['status']) {
                 console.log('response', response)
@@ -121,7 +123,7 @@ const Loginpage = ({ imageMaxWidth = "200px", imageMaxHeight = "160px" }) => {
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <ReCAPTCHA
-                                        sitekey="6LeD-McpAAAAAAOg_X4GkI5-R0jE8cWECaI3HgAj"
+                                        sitekey="6LfyLccpAAAAANyipAsBoNUzKonrlySyj0JNVcD0"
                                         onChange={onChangeCaptcha}
                                     />
                                 </div>

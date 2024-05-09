@@ -8,7 +8,7 @@ const UserContext = createContext();
 // Crie um componente provedor para envolver sua aplicação
 export const UserProvider = ({ children }) => {
     const [cookies, setCookie] = useCookies(['user']);
-    const [domain, setDomain] = useState('http://10.0.0.183:5178/');
+    const [domain, setDomain] = useState('http://162.240.102.146:5170/');
 
 
     // Verificar se cookies é uma array antes de desestruturar

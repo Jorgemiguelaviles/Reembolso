@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import axios from 'axios';
+import { useUser } from '../../userContext';
+
 
 const Formularioedit = ({ show, handleClose, despesa, updateList }) => {
     const [novaDespesa, setNovaDespesa] = useState({
@@ -12,6 +14,7 @@ const Formularioedit = ({ show, handleClose, despesa, updateList }) => {
         qnt_editavel: ''
     });
 
+    const { domain } = useUser();
     const [envioSucesso, setEnvioSucesso] = useState(false);
     const [mostrarErro, setMostrarErro] = useState(false);
     const [camposVazios, setCamposVazios] = useState([]);
@@ -95,7 +98,7 @@ const Formularioedit = ({ show, handleClose, despesa, updateList }) => {
             delete dadosDespesa.valor;
         }
     
-        const rotaBack = `http://10.0.0.183:5178/despesas/${despesa.id}/update`;
+        const rotaBack = `${domain}despesas/${despesa.id}/update`;
         try {
             const response = await axios.post(rotaBack, dadosDespesa);
             console.log('Resposta do servidor:', response.data);

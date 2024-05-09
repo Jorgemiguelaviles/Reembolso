@@ -4,7 +4,7 @@ import removeIcon from "../../../js/assets/icons/x.png";
 import enviarDadosParaBackend from '../../hooks/functions/submitbackend/submitbackendDataandFile';
 import useEncaminhar from '../../hooks/functions/encaminhar/useEncaminhar'
 import { Dropdown } from '../index'
-import { useUser } from '../userContext';
+import { useUser } from '../../userContext';
 
 const CampoFormularioEdit = ({
     setShowModal, // Desestruture apenas a função setShowModal aqui

@@ -20,7 +20,7 @@ class LoginController extends Controller
         $captcha = $request->input('captcha');
 
 
-        $recaptchaSecretKey = '6LeD-McpAAAAAKcjy3rvEMLCEYSuk3lrGjm1zjHA';
+        $recaptchaSecretKey = '6LfyLccpAAAAABmE20NgC6RrfkGlM2I0n3Oa0_UU';
 
 
         $recaptchaVerifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
