@@ -28,7 +28,7 @@
                 <p style="font-size: 16px; line-height: 1.5; color: #666666;">O usuário {{ $usuario }} editou uma solicitação, favor averiguar.</p>
 		<p style="font-size: 16px; line-height: 1.5; color: #666666;">
     Link para acesso:
-    <a href="http://162.240.102.146:5170/login" style="color: #007bff; text-decoration: none; font-weight: bold;">
+    <a href="http://alpinacloud.com.br:5170/login" style="color: #007bff; text-decoration: none; font-weight: bold;">
         Acessar o sistema aqui
     </a>
 </p>

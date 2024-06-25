@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Formulario extends Model
 {
     protected $fillable = [
+        'conjunto',
         'despesa',
         'status',
         'valor',
@@ -17,12 +18,11 @@ class Formulario extends Model
         'Solicitante',
         'ultimaAtualizacao',
         'itsdolar',
-        'inforeembolso_id', // Remova a repetiÃ§Ã£o dessa linha
+        'inforeembolso_id', // Remova a repetição dessa linha
         'active',
         'tipoDePagamento',
         'data',
-        'direcionado_ao_centro_de_custo'
-    ];
+        'direcionado_ao_centro_de_custo'    ];
 
     public function inforeembolso()
     {

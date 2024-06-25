@@ -22,7 +22,8 @@ const Loginpage = ({ imageMaxWidth = "200px", imageMaxHeight = "160px" }) => {
         setDepartamento,
         setGestor,
         setAcesso,
-        setCPF
+        setCPF,
+	domain
     } = useUser();
 
     const encaminhar = useEncaminhar();
@@ -58,7 +59,7 @@ const Loginpage = ({ imageMaxWidth = "200px", imageMaxHeight = "160px" }) => {
 
         // Se todos os campos estiverem preenchidos, continue com o envio
         try {
-            const response = await enviarDadosParaBackend("http://162.240.102.146:5170/datalogin", { Usuario, Senha, captcha });
+            const response = await enviarDadosParaBackend(`${domain}datalogin`, { Usuario, Senha, captcha });
 
 
             if (response && response.data && response.data.length > 1 && response.data[1]['status']) {

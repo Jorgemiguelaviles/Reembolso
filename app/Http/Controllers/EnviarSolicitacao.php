@@ -13,18 +13,18 @@ use Illuminate\Support\Facades\Mail;
 
 class EnviarSolicitacao extends Controller
 {
-    // MÃ©todo para enviar uma nova solicitaÃ§Ã£o
+    // Método para enviar uma nova solicitação
     public function enviarSolicitacao(Request $request)
     {
 
         function gerarNomeAleatorio()
         {
-            // ObtÃ©m a data e hora atual
+            // Obtém a data e hora atual
             $dataHoraAtual = Carbon::now();
             // Formata a data e hora atual para o formato desejado
             $nomeAleatorio = $dataHoraAtual->format('YmdHisv');
 
-            // Adiciona uma parte aleatÃ³ria ao nome para garantir unicidade
+            // Adiciona uma parte aleatória ao nome para garantir unicidade
             $nomeAleatorio .= "_" . uniqid();
 
             return $nomeAleatorio;
@@ -89,7 +89,7 @@ class EnviarSolicitacao extends Controller
 
         $validator = Validator::make($camposDoBanco1, $rules);
         if ($validator->fails()) {
-            // Retorna uma resposta com os erros de validaÃ§Ã£o
+            // Retorna uma resposta com os erros de validação
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
@@ -127,6 +127,9 @@ class EnviarSolicitacao extends Controller
         $emailGestorResponsavel = UserExternal::where('Nome', $gestor)->value('email');
         $emailsolicitanteResponsavel = UserExternal::where('Nome', $nomeSolicitante)->value('email');
         $emailContabilidadeResponsavel = UserExternal::where('ReembolsoContabilidadereembolso', true)->pluck('email');
+        //$emailContabilidadeResponsavel = ['jorge.ti@alpina.com.br'];
+
+
 
         $status = 'Pendente';
 
@@ -138,14 +141,18 @@ class EnviarSolicitacao extends Controller
             $status = 'Aprovado';
         }
 
+
+
+
+
         if ($status === 'Pre-aprovado') {
             $emailList = array_filter([$emailsolicitanteResponsavel, $emailGestorResponsavel]);
             if (!empty($emailList)) {
                 try {
                     Mail::send('contabilidadeAtualizaStatusSemiAprovado', ['usuario' => $nomeSolicitante], function ($message) use ($emailList) {
                         $message->to($emailList);
-                        $message->subject('AtualizaÃ§Ã£o de Status');
-                        $message->from('notify@alpina.com.br', 'SolicitaÃ§Ã£o de reembolso');
+                        $message->subject('Atualização de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                     });
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -159,8 +166,8 @@ class EnviarSolicitacao extends Controller
 
                     Mail::send('usuarioCriaSolicitacaoParaContabilidade', ['usuario' => $nomeSolicitante], function ($message) use ($email) {
                         $message->to($email);
-                        $message->subject('AtualizaÃ§Ã£o de Status');
-                        $message->from('notify@alpina.com.br', 'SolicitaÃ§Ã£o de reembolso');
+                        $message->subject('Atualizacao de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                     });
                 }
             }
@@ -223,7 +230,7 @@ class EnviarSolicitacao extends Controller
 
             $validator2 = Validator::make($type2, $rules2);
             if ($validator2->fails()) {
-                // Retorna uma resposta com os erros de validaÃ§Ã£o
+                // Retorna uma resposta com os erros de validação
                 return response()->json(['errors' => $validator2->errors()], 400);
             }
 
@@ -236,12 +243,14 @@ class EnviarSolicitacao extends Controller
                 $tempname = $_FILES['dadosParaEnviar']['tmp_name'][$index]['anexos'][0];
 
                 $name = $nome . '.' . $extension;
-                $caminhoDataBase = 'http://10.0.0.183/imgsReembolso/';
+                $caminhoDataBase = 'http://alpinacloud.com.br/imgsReembolso/';
                 $caminhoTransferencia = '/var/www/html/imgsReembolso/';
                 $nomeTransferencia = $caminhoTransferencia . $name;
                 $nomeDatabase = $caminhoDataBase . $name;
                 $novoFormulario = new Formulario([
                     //'direcionado_ao_centro_de_custo'
+                    'conjunto' => '1.00',
+                    'status' => $status,
                     'despesa' => $despesa,
                     'valor' => $valor,
                     'quantidade' => $quantidade,
@@ -262,7 +271,7 @@ class EnviarSolicitacao extends Controller
             } else {
 
                 $novoFormulario = new Formulario([
-                    //'direcionado_ao_centro_de_custo'
+                    'conjunto' => '1.00',
                     'despesa' => $despesa,
                     'valor' => $valor,
                     'quantidade' => $quantidade,
@@ -280,7 +289,7 @@ class EnviarSolicitacao extends Controller
             }
         }
 
-        // Retornar listas para cada variÃ¡vel
+        // Retornar listas para cada variável
         return response()->json(['mensagem' => 'Sistema cadastrado com sucesso'], 201);
     }
 }

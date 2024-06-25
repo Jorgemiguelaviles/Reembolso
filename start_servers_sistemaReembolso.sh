@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Inicia o servidor React
-nohup npm run dev -- --host 162.240.102.146 --port 8001 > react_server.log 2>&1 &
+nohup npm run dev -- --host alpinacloud.com.br --port 8001 > react_server.log 2>&1 &
 
 # Aguarda um curto período para garantir que o servidor React tenha tempo de iniciar
 sleep 10

@@ -129,7 +129,7 @@ function Acompanhamento() {
                                         {solicitacoes && (
                                             solicitacoes.map((solicitacao, index) => (
                                                 <tr key={index}>
-                                                    <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{new Date(solicitacao.updated_at).toLocaleDateString('pt-BR')}</td>
+                                                   <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{new Date(solicitacao.data).toLocaleDateString('pt-BR')}</td>
                                                     <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{solicitacao.Solicitante}</td>
                                                     <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{solicitacao.despesa}</td>
                                                     <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{solicitacao.descricao}</td>

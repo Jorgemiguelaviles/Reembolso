@@ -257,6 +257,7 @@ function Consulta() {
                                             <th scope="col">Autor</th>
                                             <th scope="col">Solicitante</th>
                                             <th scope="col">Chapa</th>
+					    <th scope="col">CPF</th>
                                             <th scope="col">Gestor</th>
                                             <th scope="col">Departamento</th>
                                             <th scope="col">Empresa</th>
@@ -268,7 +269,7 @@ function Consulta() {
                                             <th scope="col">Direcionado</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Detalhes</th>
-                                            <th scope="col">Editar</th>
+					    <th scope="col">Editar</th>
                                             <th scope="col">Imprimir</th>
                                         </tr>
                                     </thead>
@@ -317,6 +318,7 @@ function Consulta() {
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.Solicitante}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.designationpeople}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.chapa}</td>
+								<td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.cpf}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.gestor}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.departamento}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.TipoDeEmpresa}</td>
@@ -337,6 +339,7 @@ function Consulta() {
                                                                         </Button>
                                                                     </Link>
                                                                 </td>
+								<td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.motivoDoCancelamento}</td>
                                                                 {(cabecalho.status === 'Cancelado' || cabecalho.status === 'Rejeitado') ? (
                                                                     <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>
                                                                         <Link to={{ pathname: '/solicitacaoEdit', search: `?cabecalhoId=${cabecalho.id}` }}>
@@ -400,6 +403,7 @@ function Consulta() {
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.Solicitante}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.designationpeople}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.chapa}</td>
+								<td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.cpf}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.gestor}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.departamento}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.TipoDeEmpresa}</td>
@@ -439,6 +443,7 @@ function Consulta() {
                                                                         </Button>
                                                                     </Link>
                                                                 </td>
+								<td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.motivoDoCancelamento}</td>
                                                                 {(cabecalho.status === 'Rejeitado' && cabecalho.Solicitante == nome) ? (
                                                                     <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>
                                                                         <Link to={{ pathname: '/solicitacaoEdit', search: `?cabecalhoId=${cabecalho.id}` }}>
@@ -503,6 +508,7 @@ function Consulta() {
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.Solicitante}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.designationpeople}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.chapa}</td>
+								<td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.cpf}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.gestor}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.departamento}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.TipoDeEmpresa}</td>
@@ -608,6 +614,7 @@ function Consulta() {
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.Solicitante}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.designationpeople}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.chapa}</td>
+								<td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.cpf}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.gestor}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.departamento}</td>
                                                                 <td style={{ backgroundColor: getStatusColor(cabecalho.status) }}>{cabecalho.TipoDeEmpresa}</td>

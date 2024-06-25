@@ -21,12 +21,12 @@ class solicitcaoEditSubmit extends Controller
 
         function gerarNomeAleatorio()
         {
-            // ObtÃ©m a data e hora atual
+            // Obtém a data e hora atual
             $dataHoraAtual = Carbon::now();
             // Formata a data e hora atual para o formato desejado
             $nomeAleatorio = $dataHoraAtual->format('YmdHisv');
 
-            // Adiciona uma parte aleatÃ³ria ao nome para garantir unicidade
+            // Adiciona uma parte aleatória ao nome para garantir unicidade
             $nomeAleatorio .= "_" . uniqid();
 
             return $nomeAleatorio;
@@ -84,13 +84,14 @@ class solicitcaoEditSubmit extends Controller
 
         $validator = Validator::make($camposDoBanco1, $rules);
         if ($validator->fails()) {
-            // Retorna uma resposta com os erros de validaÃ§Ã£o
+            // Retorna uma resposta com os erros de validação
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
         $gestor = $camposDoBanco1[4] ?? null;
         $nomeSolicitante = $camposDoBanco1[10] ?? null;
         $emailContabilidadeResponsavel = UserExternal::where('ReembolsoContabilidadereembolso', true)->pluck('email');
+        //$emailContabilidadeResponsavel =['jorge.ti@alpina.com.br'];
 
         foreach ($emailContabilidadeResponsavel as $index => $email) {
             if ($email != null) {
@@ -99,8 +100,8 @@ class solicitcaoEditSubmit extends Controller
 
                 Mail::send('usuarioEditaSolicitacaoParaContabilidade', ['usuario' => $nomeSolicitante], function ($message) use ($email) {
                     $message->to($email);
-                    $message->subject('AtualizaÃ§Ã£o de Status');
-                    $message->from('notify@alpina.com.br', 'SolicitaÃ§Ã£o de reembolso');
+                    $message->subject('Atualizacao de Status');
+                    $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                 });
             }
         }
@@ -165,6 +166,14 @@ class solicitcaoEditSubmit extends Controller
         $Inforeembolso->save();
 
         Formulario::where('inforeembolso_id', $cabecalhoId)->update(['active' => false]);
+        $maxConjunto = Formulario::where('inforeembolso_id', $cabecalhoId)->max('conjunto');
+
+        if ($maxConjunto === null) {
+            $maxConjunto = 1; // Se não houver registros, define como 1
+        } else {
+            $maxConjunto += 1;
+        }
+
 
 
 
@@ -191,7 +200,7 @@ class solicitcaoEditSubmit extends Controller
 
             $validator2 = Validator::make($type2, $rules2);
             if ($validator2->fails()) {
-                // Retorna uma resposta com os erros de validaÃ§Ã£o
+                // Retorna uma resposta com os erros de validação
                 return response()->json(['errors' => $validator2->errors()], 400);
             }
 
@@ -201,13 +210,15 @@ class solicitcaoEditSubmit extends Controller
                 $tempname = $_FILES['dadosParaEnviar']['tmp_name'][$index]['anexos'][0];
 
                 $name = $nome . '.' . $extension;
-                $caminhoDataBase = 'http://10.0.0.183/imgsReembolso/';
+                $caminhoDataBase = 'http://alpinacloud.com.br/imgsReembolso/';
                 $caminhoTransferencia = '/var/www/html/imgsReembolso/';
                 $nomeTransferencia = $caminhoTransferencia . $name;
                 $nomeDatabase = $caminhoDataBase . $name;
 
                 $novoFormulario = new Formulario([
+                    'conjunto' => $maxConjunto,
                     'despesa' => $despesa,
+                    'status' => $status,
                     'valor' => $valor,
                     'quantidade' => $quantidade,
                     'total' => $total,
@@ -227,7 +238,9 @@ class solicitcaoEditSubmit extends Controller
             } else {
 
                 $novoFormulario = new Formulario([
+                    'conjunto' => $maxConjunto,
                     'despesa' => $despesa,
+                    'status' => $status,
                     'valor' => $valor,
                     'quantidade' => $quantidade,
                     'total' => $total,
@@ -254,6 +267,7 @@ class solicitcaoEditSubmit extends Controller
             'camposDoBanco1' => $camposDoBanco1,
             'acesso' => $acesso,
             'Inforeembolso' => $Inforeembolso,
+            'maxConjunto' => $maxConjunto,
         ]);
     }
 }

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 class AtualizarStatusController extends Controller
 {
     /**
-     * Retorna uma mensagem básica indicando que está funcionando.
+     * Retorna uma mensagem b�sica indicando que est� funcionando.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -50,7 +50,8 @@ class AtualizarStatusController extends Controller
 
         $emailGestorResponsavel = UserExternal::where('Nome', $gestor)->value('email');
         $emailsolicitanteResponsavel = UserExternal::where('Nome', $solicitanteLine)->value('email');
-        $emailContabilidadeResponsavel = UserExternal::where('Departamento', 'Contabilidade')->pluck('email');
+        $emailContabilidadeResponsavel = UserExternal::where('ReembolsoContabilidadereembolso', true)->pluck('email');
+
 
 
 
@@ -61,8 +62,8 @@ class AtualizarStatusController extends Controller
                 try {
                     Mail::send('contabilidadeAtualizaStatusRejeitado', ['usuario' => $solicitanteLine], function ($message) use ($email) {
                         $message->to($email);
-                        $message->subject('Atualização de Status');
-                        $message->from('notify@alpina.com.br', 'Solicitação de reembolso');
+                        $message->subject('Atualizacao de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                     });
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -74,8 +75,8 @@ class AtualizarStatusController extends Controller
                 try {
                     Mail::send('contabilidadeAtualizaStatusRejeitado', ['usuario' => $solicitanteLine], function ($message) use ($email) {
                         $message->to($email);
-                        $message->subject('Atualização de Status');
-                        $message->from('notify@alpina.com.br', 'Solicitação de reembolso');
+                        $message->subject('Atualizacao de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                     });
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -90,8 +91,8 @@ class AtualizarStatusController extends Controller
                 try {
                     Mail::send('contabilidadeAtualizaStatusSemiAprovado', ['usuario' => $solicitanteLine], function ($message) use ($emailList) {
                         $message->to($emailList);
-                        $message->subject('Atualização de Status');
-                        $message->from('notify@alpina.com.br', 'Solicitação de reembolso');
+                        $message->subject('Atualizacao de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                     });
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -106,8 +107,8 @@ class AtualizarStatusController extends Controller
                     try {
                         Mail::send('gestorAtualizaStatusCancela', ['usuario' => $solicitanteLine], function ($message) use ($email) {
                             $message->to($email);
-                            $message->subject('Atualização de Status');
-                            $message->from('notify@alpina.com.br', 'Solicitação de reembolso');
+                            $message->subject('Atualizacao de Status');
+                            $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                         });
                     } catch (\Exception $e) {
                         return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -121,8 +122,8 @@ class AtualizarStatusController extends Controller
                 try {
                     Mail::send('gestorAtualizaStatusCancela', ['usuario' => $solicitanteLine], function ($message) use ($email) {
                         $message->to($email);
-                        $message->subject('Atualização de Status');
-                        $message->from('notify@alpina.com.br', 'Solicitação de reembolso');
+                        $message->subject('Atualizacao de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                     });
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -134,8 +135,8 @@ class AtualizarStatusController extends Controller
                 try {
                     Mail::send('contabilidadeAtualizaStatusFinalizado', ['usuario' => $solicitanteLine], function ($message) use ($email) {
                         $message->to($email);
-                        $message->subject('Atualização de Status');
-                        $message->from('notify@alpina.com.br', 'Solicitação de reembolso');
+                        $message->subject('Atualizacao de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                     });
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -147,8 +148,8 @@ class AtualizarStatusController extends Controller
                 try {
                     Mail::send('contabilidadeAtualizaStatusFinalizado', ['usuario' => $solicitanteLine], function ($message) use ($email) {
                         $message->to($email);
-                        $message->subject('Atualização de Status');
-                        $message->from('notify@alpina.com.br', 'Solicitação de reembolso');
+                        $message->subject('Atualizacao de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                     });
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -160,8 +161,8 @@ class AtualizarStatusController extends Controller
                     try {
                         Mail::send('gestorAtualizaStatusAprova', ['usuario' => $solicitanteLine], function ($message) use ($email) {
                             $message->to($email);
-                            $message->subject('Atualização de Status');
-                            $message->from('notify@alpina.com.br', 'Solicitação de reembolso');
+                            $message->subject('Atualizacao de Status');
+                            $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                         });
                     } catch (\Exception $e) {
                         return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -176,8 +177,8 @@ class AtualizarStatusController extends Controller
                 try {
                     Mail::send('gestorAtualizaStatusAprova', ['usuario' => $solicitanteLine], function ($message) use ($email) {
                         $message->to($email);
-                        $message->subject('Atualização de Status');
-                        $message->from('notify@alpina.com.br', 'Solicitação de reembolso');
+                        $message->subject('Atualizacao de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
                     });
                 } catch (\Exception $e) {
                     return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
@@ -188,15 +189,23 @@ class AtualizarStatusController extends Controller
 
 
         if (!$inforeembolso) {
-            return response()->json(['error' => 'Solicitação não encontrada'], 404);
+            return response()->json(['error' => 'Solicita��o n�o encontrada'], 404);
         }
 
         $inforeembolso->status = $newStatus;
 
+        $maxConjunto = Formulario::where('inforeembolso_id', $id)->max('conjunto');
+        Formulario::where('inforeembolso_id', $id)
+            ->where('conjunto', $maxConjunto)
+            ->update(['status' => $newStatus]);
+
         if ($newStatus === 'Rejeitado' || $newStatus === 'Cancelado') {
             $inforeembolso->motivoDoCancelamento = $reasonforcancellation;
-            Formulario::where('inforeembolso_id', $id)->update(['status' => $newStatus]);
         }
+
+
+
+
 
 
 
@@ -206,7 +215,6 @@ class AtualizarStatusController extends Controller
 
 
 
-        return response()->json(['message' => $solicitanteLine]);
         return response()->json(['message' => 'Status atualizado com sucesso']);
     }
 }

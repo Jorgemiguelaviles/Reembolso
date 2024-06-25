@@ -46,6 +46,7 @@ const PDF = () => {
     const [Supervisor, setSupervisor] = useState();
     const [CodFunc, setCodFunc] = useState();
     const [Solicitante, setSolicitante] = useState();
+    const [CentroDeCusto, setCentroDeCusto] = useState();
 
 
     const [table, setTable] = useState([]);
@@ -86,9 +87,17 @@ const PDF = () => {
                 setCodFunc(data['dados'][1][0]['chapa']);
                 setAprovador(data['dados'][1][0]['ultimaAtualizacao']);
                 setTotal(data['dados'][1][0]['SomaTotalDosValores']);
+		setCentroDeCusto(data['dados'][1][0]['centro_de_custo'])
 
-                setTable(data['dados'][0]);
+                let list = [];
 
+                data['dados'][0].forEach(item => {
+                    if (item.status !== 'Cancelado' && item.status !== 'Rejeitado') {
+                        list.push(item);
+                    }
+                });
+
+		setTable(list);
 
 
 
@@ -188,6 +197,7 @@ const PDF = () => {
                             <div class="row">
                                 <Input obrigatorio={false} etiqueta={'Objetivo'} desativado={true} input={Objetivo} setinput={setObjetivo} tipo={'text'} subtitulo={'Objetivo'} />
                                 <Input obrigatorio={false} etiqueta={'Empresa'} desativado={true} input={Empresa} setinput={setEmpresa} tipo={'text'} subtitulo={'Empresa'} />
+				<Input obrigatorio={false} etiqueta={'Centro de custo'} desativado={true} input={CentroDeCusto} setinput={setCentroDeCusto} tipo={'text'} subtitulo={'Centro de custo'} />
                             </div>
                             <div class="row">
                                 <Input obrigatorio={false} etiqueta={'Obra'} desativado={true} input={Obra} setinput={setObra} tipo={'text'} subtitulo={'Obra'} />
@@ -208,6 +218,7 @@ const PDF = () => {
                                                 <th scope="col">ID</th>
                                                 <th scope="col">Data</th>
                                                 <th scope="col">Despesa</th>
+						<th scope="col">Direcionado ao centro de custo:</th>
                                                 <th scope="col">Descricao</th>
                                                 <th scope="col">Tipo de pagamento</th>
                                                 <th scope="col">Quantidade</th>
@@ -221,6 +232,7 @@ const PDF = () => {
                                                     <td>{index}</td>
                                                     <td>{item.data}</td>
                                                     <td>{item.despesa}</td>
+						    <td>{item.direcionado_ao_centro_de_custo}</td>
                                                     <td>{item.descricao}</td>
                                                     <td>{item.tipoDePagamento}</td>
                                                     <td>{item.quantidade}</td>

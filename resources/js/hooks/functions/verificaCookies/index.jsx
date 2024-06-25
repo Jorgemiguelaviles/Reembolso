@@ -7,16 +7,14 @@ const verificarInatividade = (cookies) => {
     if (ultimaAtividade) {
         const tempoAtual = new Date().getTime();
         const tempoInativo = tempoAtual - parseInt(ultimaAtividade);
-        const InatividadeTimeout = 60000 * 30;
+        const InatividadeTimeout = 60000 * 60 * 2;
 
         if (tempoInativo > InatividadeTimeout) {
             // Calcular o tempo inativo em minutos e segundos
             const minutosInativos = Math.floor(tempoInativo / 60000);
             const segundosInativos = Math.floor((tempoInativo % 60000) / 1000);
 
-            console.log(`Tempo inativo: ${minutosInativos} minutos e ${segundosInativos} segundos`);
-
-
+            
             return false
         } else {
             // Reatualizar o valor de ultimaAtividade para a data atual
