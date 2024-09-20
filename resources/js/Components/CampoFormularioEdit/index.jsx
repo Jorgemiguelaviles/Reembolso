@@ -3,15 +3,19 @@ import anexoIcon from "../../../js/assets/icons/anexar.png";
 import removeIcon from "../../../js/assets/icons/x.png";
 import enviarDadosParaBackend from '../../hooks/functions/submitbackend/submitbackendDataandFile';
 import useEncaminhar from '../../hooks/functions/encaminhar/useEncaminhar'
-import { Dropdown } from '../index'
+import { Dropdown, Input } from '../index'
 import { useUser } from '../../userContext';
 
 const CampoFormularioEdit = ({
     setShowModal, // Desestruture apenas a função setShowModal aqui
     camposDoBanco,
     selectedOption,
-    setSelectedOption }
+    setSelectedOption,
+    dadosFormularios,
+    setDadosFormularios,
+}
 ) => {
+	console.log('camposDoBanco', camposDoBanco)
     const { domain } = useUser();
     const [data, setData] = useState('');
     const [despesa, setDespesa] = useState('');
@@ -20,7 +24,6 @@ const CampoFormularioEdit = ({
     const [total, setTotal] = useState(0);
     const [moeda, setMoeda] = useState('R$');
     const [msg, setMsg] = useState('');
-    const [dadosFormularios, setDadosFormularios] = useState([]);
     const [Produltos, setProdultos] = useState([]);
     const [notificationVisible, setNotificationVisible] = useState(false);
     const [valorEmDolar, setValorEmDolar] = useState(false);
@@ -28,92 +31,99 @@ const CampoFormularioEdit = ({
     const [style, setstyle] = useState('col');
     const searchParams = new URLSearchParams(location.search);
     const parametro = searchParams.get('cabecalhoId');
-
+    const [somaTotalDosValores, setSomaTotalDosValores] = useState(0.00);
     const [optionsData, setoptionsData] = useState([
-    '60 - ESTAGIARIOS',
-    '101 - CORTE DE REFORCOS DE VIDRO',
-    '102 - PREPARACAO DE RESINAS',
-    '105 - LAMINACAO SPRAY-UP',
-    '107 - LAMINACAO DE PAS',
-    '110 - ACABAMENTO Equipamentos',
-    '1101 - GARANTIA DA QUALIDADE',
-    '1102 - CONTROLE DA QUALIDADE',
-    '111 - REPARO/RETRABALHO',
-    '115 - RTM LIGHT',
-    '116 - LIXAMENTO E CORTE',
-    '1399 - GERAL MANUTENCAO',
-    '1510 - SEMI-ACABADOS',
-    '1511 - EMPILHADORES',
-    '1516 - PLANEJAMENTO E CONTROLE DE PRODUCAO',
-    '1518 - ALMOXARIFADO',
-    '1598 - SUPERVISAO',
-    '1599 - GERAL PCP',
-    '1601 - MOTORISTAS',
-    '1602 - EMPILHADORES',
-    '1698 - SUPERVISAO',
-    '1699 - GERAL EXPEDICAO',
-    '1901 - DEPTO MEDICO',
-    '198 - PULTRUSAO E BMC',
-    '199 - GERAL - COMPOSITOS',
-    '2101 - CUSTOS/ORCAMENTOS',
-    '2102 - Contabilidade',
-    '2103 - TESOURARIA',
-    '2104 - RECURSOS HUMANOS',
-    '2106 - FATURAMENTO',
-    '2109 - EXPORTACAO/IMPORTACAO',
-    '2110 - INFORMATICA/O&M',
-    '2201 - ENGENHARIA DE PRODUTO',
-    '2401 - COMPRAS',
-    '2601 - ADM/VENDAS EQUIPAMENTOS',
-    '2603 - COORDENACAO DE CONTRATOS',
-    '2604 - ENGENHARIA DE APLICACAO',
-    '2605 - SERVICOS',
-    '2606 - VENDAS-RIO DE JANEIRO',
-    '2607 - VENDAS-PERNAMBUCO',
-    '2610 - MARKETING',
-    '2611 - SERVICOS EXTERNOS',
-    '2698 - GERENCIA',
-    '2902 - SEGURANCA DO TRABALHO',
-    '301 - EXTRUSAO DE PERFIS E FILME',
-    '303 - TERMOFORMAGEM A19/W20',
-    '307 - LIDERES',
-    '3099 - GERAL GER PRODUCAO',
-    '3503 - ALTA GESTAO',
-    '399 - ESTAMPAGEM E MONTAGEM DE ELIMI',
-    '401 - PRE-MONTAGEM',
-    '402 - COLAGEM ENCHIMENTOS A-19, W-20',
-    '404 - MONTAGEM DO ENCHIMENTO SG-BSD',
-    '408 - MONTAGEM DE CONJUNTO DE ACIONA',
-    '499 - GERAL SERVICOS',
-    '502 - EMBALADORES',
-    '599 - GERAL EMBALAGEM',
-    '601 - LIDERES',
-    '697 - ORION - COMERCIAL',
-    '698 - SUPERVISAO',
-    '701 - FURACAO, CORTE, MONT. E ACABAM',
-    '704 - SERRALHERIA',
-    '705 - CORTE A PLASMA/OXICORTE',
-    '707 - SOLDA',
-    '7101 - PREMAP - DISTRIBUICAO',
-    '7109 - ACABAMENTO (MONT., SOLDA, ESP)',
-    '7116 - ASSISTENCIA TECNICA',
-    '7119 - SUPERVISAO',
-    '7140 - ROTOMOLDAGEM DT - MAQ. SH-5000',
-    '7141 - ROTOMOLDAGEM DT - MAQ. CA-3500',
-    '7197 - LIDERES',
-    '7201 - ADM VENDAS',
-    '7202 - VENDEDORES',
-    '7302 - ADMINISTRACAO',
-    '7401 - ENGENHARIA',
-    '799 - GERAL MECANICA',
-    '801 - USINAGEM'
-]);
+        '60 - ESTAGIARIOS',
+        '101 - CORTE DE REFORCOS DE VIDRO',
+        '102 - PREPARACAO DE RESINAS',
+        '105 - LAMINACAO SPRAY-UP',
+        '107 - LAMINACAO DE PAS',
+        '110 - ACABAMENTO Equipamentos',
+        '1101 - GARANTIA DA QUALIDADE',
+        '1102 - CONTROLE DA QUALIDADE',
+        '111 - REPARO/RETRABALHO',
+        '115 - RTM LIGHT',
+        '116 - LIXAMENTO E CORTE',
+        '1399 - GERAL MANUTENCAO',
+        '1510 - SEMI-ACABADOS',
+        '1511 - EMPILHADORES',
+        '1516 - PLANEJAMENTO E CONTROLE DE PRODUCAO',
+        '1518 - ALMOXARIFADO',
+        '1598 - SUPERVISAO',
+        '1599 - GERAL PCP',
+        '1601 - MOTORISTAS',
+        '1602 - EMPILHADORES',
+        '1698 - SUPERVISAO',
+        '1699 - GERAL EXPEDICAO',
+        '1901 - DEPTO MEDICO',
+        '198 - PULTRUSAO E BMC',
+        '199 - GERAL - COMPOSITOS',
+        '2101 - CUSTOS/ORCAMENTOS',
+        '2102 - Contabilidade',
+        '2103 - TESOURARIA',
+        '2104 - RECURSOS HUMANOS',
+        '2106 - FATURAMENTO',
+        '2109 - EXPORTACAO/IMPORTACAO',
+        '2110 - INFORMATICA/O&M',
+        '2201 - ENGENHARIA DE PRODUTO',
+        '2401 - COMPRAS',
+        '2601 - ADM/VENDAS EQUIPAMENTOS',
+        '2603 - COORDENACAO DE CONTRATOS',
+        '2604 - ENGENHARIA DE APLICACAO',
+        '2605 - SERVICOS',
+        '2606 - VENDAS-RIO DE JANEIRO',
+        '2607 - VENDAS-PERNAMBUCO',
+        '2610 - MARKETING',
+        '2611 - SERVICOS EXTERNOS',
+        '2698 - GERENCIA',
+        '2902 - SEGURANCA DO TRABALHO',
+        '301 - EXTRUSAO DE PERFIS E FILME',
+        '303 - TERMOFORMAGEM A19/W20',
+        '307 - LIDERES',
+        '3099 - GERAL GER PRODUCAO',
+        '3503 - ALTA GESTAO',
+        '399 - ESTAMPAGEM E MONTAGEM DE ELIMI',
+        '401 - PRE-MONTAGEM',
+        '402 - COLAGEM ENCHIMENTOS A-19, W-20',
+        '404 - MONTAGEM DO ENCHIMENTO SG-BSD',
+        '408 - MONTAGEM DE CONJUNTO DE ACIONA',
+        '499 - GERAL SERVICOS',
+        '502 - EMBALADORES',
+        '599 - GERAL EMBALAGEM',
+        '601 - LIDERES',
+        '697 - ORION - COMERCIAL',
+        '698 - SUPERVISAO',
+        '701 - FURACAO, CORTE, MONT. E ACABAM',
+        '704 - SERRALHERIA',
+        '705 - CORTE A PLASMA/OXICORTE',
+        '707 - SOLDA',
+        '7101 - PREMAP - DISTRIBUICAO',
+        '7109 - ACABAMENTO (MONT., SOLDA, ESP)',
+        '7116 - ASSISTENCIA TECNICA',
+        '7119 - SUPERVISAO',
+        '7140 - ROTOMOLDAGEM DT - MAQ. SH-5000',
+        '7141 - ROTOMOLDAGEM DT - MAQ. CA-3500',
+        '7197 - LIDERES',
+        '7201 - ADM VENDAS',
+        '7202 - VENDEDORES',
+        '7302 - ADMINISTRACAO',
+        '7401 - ENGENHARIA',
+        '799 - GERAL MECANICA',
+        '801 - USINAGEM'
+    ]);
+
+
 
     const handleShow = () => {
 
         setShowModal(true);
         setMsg(<span style={{ color: 'green', fontWeight: 'bold' }}>Solicitação enviada com sucesso!</span>);
     };
+
+    useEffect(() => {
+        const soma = dadosFormularios.reduce((acc, item) => acc + parseFloat(item.total), 0.0);
+        setSomaTotalDosValores(soma);
+    }, [dadosFormularios]);
 
     useEffect(() => {
 
@@ -464,10 +474,10 @@ const CampoFormularioEdit = ({
 
     const duplicarFormulario = () => {
         const novoFormulario = {
-            pagamento: '',
             data: "",
             despesa: "",
             valor: "",
+            pagamento: '',
             quantidade: "",
             total: "",
             anexos: [],
@@ -555,8 +565,7 @@ const CampoFormularioEdit = ({
         }
         return false; // Retorna false se nenhum elemento corresponder ao valor fornecido
     }
-
-
+console.log('dadosFormularios', dadosFormularios)
     return (
         <div>
             {dadosFormularios.map((formulario, index) => (
@@ -697,7 +706,7 @@ const CampoFormularioEdit = ({
                                 }
                             >
                                 <option value="">Selecione uma opção</option>
-                                <option value="cartao coorporativo">Cartão coorporativo</option>
+                                <option value="Cartão corporativo">Cartão corporativo</option>
                                 <option value="dinheiro">Dinheiro</option>
                             </select>
                         </div>
@@ -849,6 +858,16 @@ const CampoFormularioEdit = ({
                         Adicionar Formulário
                     </button>
                 </div>
+
+
+                <Input obrigatorio={true}
+                    etiqueta={'Valor total'}
+                    desativado={true}
+                    input={somaTotalDosValores}
+                    setinput={setSomaTotalDosValores}
+                    tipo={'text'}
+                    subtitulo={'Valor total'}
+                />
 
                 {dadosFormularios.length !== 0 && (
                     <div className="d-flex justify-content-center">

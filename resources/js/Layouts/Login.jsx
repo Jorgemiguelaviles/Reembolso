@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios"; // Importe a biblioteca Axios
-import icons from "../../js/assets/icons/grupoalpina_logo.jpg";
-import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState } from "react"
+import { Link } from "react-router-dom"
+import axios from "axios" // Importe a biblioteca Axios
+import icons from "../../js/assets/icons/grupoalpina_logo.jpg"
+import "bootstrap/dist/css/bootstrap.min.css"
 import { useUser } from '../userContext'
 import useEncaminhar from '../hooks/functions/encaminhar/useEncaminhar'
-import enviarDadosParaBackend from '../hooks/functions/submitbackend/submitbackend';
-import ReCAPTCHA from "react-google-recaptcha";
-import { Submit } from '../Components/index';
+import enviarDadosParaBackend from '../hooks/functions/submitbackend/submitbackend'
+import ReCAPTCHA from "react-google-recaptcha"
+import { Submit } from '../Components/index'
 
 const Loginpage = ({ imageMaxWidth = "200px", imageMaxHeight = "160px" }) => {
-    const [Usuario, setUsuario] = useState("");
-    const [Senha, setSenha] = useState("");
-    const [msg, setmsg] = useState("");
-    const [captcha, setCaptcha] = useState(false);
+    const [Usuario, setUsuario] = useState("")
+    const [Senha, setSenha] = useState("")
+    const [msg, setmsg] = useState("")
+    const [captcha, setCaptcha] = useState(false)
 
     const {
         setCookie,
@@ -23,68 +23,80 @@ const Loginpage = ({ imageMaxWidth = "200px", imageMaxHeight = "160px" }) => {
         setGestor,
         setAcesso,
         setCPF,
-	domain
-    } = useUser();
+        domain
+    } = useUser()
 
-    const encaminhar = useEncaminhar();
+    const encaminhar = useEncaminhar()
 
     const onChangeCaptcha = (value) => {
-        setCaptcha(value);
-    };
+        setCaptcha(value)
+    }
 
     const handleUsuarioChange = (e) => {
-        setUsuario(e.target.value);
-    };
+        setUsuario(e.target.value)
+    }
 
     const handleSenhaChange = (e) => {
-        setSenha(e.target.value);
-    };
+        setSenha(e.target.value)
+    }
 
     const handleFormSubmit = async (event) => {
-        event.preventDefault();
-        setmsg("");
-	
+        event.preventDefault()
+        setmsg("")
+
 
         // Verifica se os campos estão preenchidos
         if (!Usuario || !Senha) {
-            setmsg("Por favor, preencha o usuário e senha.");
-            return;
+            setmsg("Por favor, preencha o usuário e senha.")
+            return
         }
 
         // Verifica se o captcha foi preenchido
-        if (!captcha) {
-            setmsg("Por favor, preencha o captcha");
-            return;
-        }
+        /*if (!captcha) {
+            setmsg("Por favor, preencha o captcha")
+            return
+        }*/
 
         // Se todos os campos estiverem preenchidos, continue com o envio
         try {
-            const response = await enviarDadosParaBackend(`${domain}datalogin`, { Usuario, Senha, captcha });
+            const response = await enviarDadosParaBackend(`${domain}datalogin`, { Usuario, Senha, captcha })
+
 
 
             if (response && response.data && response.data.length > 1 && response.data[1]['status']) {
-                console.log('response', response)
-                setCookie('token', response.data.token, { path: '/' });
-                // Se o login for bem-sucedido, configure os cookies e redirecione
-                setCookie('isGestor', response.data[1]['GestorCheck'], { path: '/' });
-                setCookie('status', response.data[1]['status'], { path: '/' });
-                setCookie('Nome', response.data[1].Nome, { path: '/' });
-                setCookie('Chapa', response.data[1].Chapa, { path: '/' });
-                setCookie('Departamento', response.data[1].Departamento, { path: '/' });
-                setCookie('Gestor', response.data[1].Gestor, { path: '/' });
-                setCookie('Acesso', response.data[0], { path: '/' });
-                setCookie('CPF', response.data[1].CPF, { path: '/' });
-                setCookie('ultimaAtividade', new Date().getTime(), { path: '/' });
+                var list_id_setor_not_gestor = []
+                var list_id_setor_gestor = []
+                response.data[1].aprovadores.forEach(element => {
+                    if (element.isAprovador == 0) {
+                        list_id_setor_not_gestor.push(element.setor_id)
+                    } else {
+                        list_id_setor_gestor.push(element.setor_id)
+                    }
+                })
+                setCookie('token', response.data.token, { path: '/' })
+                setCookie('list_id_setor_not_gestor', list_id_setor_not_gestor, { path: '/' })
+                setCookie('list_id_setor_gestor', list_id_setor_gestor, { path: '/' })
+                setCookie('myId', response.data[1]['id'], { path: '/' })
+                setCookie('isGestor', response.data[1]['GestorCheck'], { path: '/' })
+                setCookie('status', response.data[1]['status'], { path: '/' })
+                setCookie('Nome', response.data[1].Nome, { path: '/' })
+                setCookie('Chapa', response.data[1].Chapa, { path: '/' })
+                setCookie('Departamento', response.data[1].Departamento, { path: '/' })
+                setCookie('Gestor', response.data[1].Gestor, { path: '/' })
+                setCookie('Acesso', response.data[0], { path: '/' })
+                setCookie('CPF', response.data[1].CPF, { path: '/' })
+                setCookie('ultimaAtividade', new Date().getTime(), { path: '/' })
 
-                encaminhar('/main'); // Redirecione após o login bem-sucedido
+                console.log('Acesso', response.data[0])
+		encaminhar('/main')
             } else {
-                encaminhar('/ErroAoLogar');
+                encaminhar('/ErroAoLogar')
             }
         } catch (error) {
-            console.error("Erro ao fazer login:", error);
-            setmsg("Ocorreu um erro ao tentar fazer login.");
+            console.error("Erro ao fazer login:", error)
+            setmsg("Ocorreu um erro ao tentar fazer login.")
         }
-    };
+    }
 
     return (
         <>
@@ -143,7 +155,7 @@ const Loginpage = ({ imageMaxWidth = "200px", imageMaxHeight = "160px" }) => {
                 </div>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default Loginpage;
+export default Loginpage

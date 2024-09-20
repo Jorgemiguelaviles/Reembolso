@@ -6,6 +6,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 
+
+class Aprovador extends Model
+{
+    use HasFactory;
+
+    protected $table = 'aprovadores'; // Nome da tabela
+
+    protected $fillable = [
+        'nome',
+        'email',
+        'setor_id',
+        'id_user',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(UserExternal::class, 'id_user');
+    }
+}
+
+
 class UserExternal extends Model
 {
     use HasFactory;
@@ -27,14 +48,14 @@ class UserExternal extends Model
         'Email',
         'status',
         'GestorCheck',
-        'EngenhariaComumEngenharia',        
-	'Engenhariaengenharia',
-	'OuvidoriaAdministraoRH',
-	'TITOOLSTI',
-	'ReembolsoComumreembolso',
-	'ReembolsoGestorreembolso',
-	'ReembolsoContabilidadereembolso',
-	'ReembolsoAdministraoreembolso',
+        'EngenhariaComumEngenharia',
+        'Engenhariaengenharia',
+        'OuvidoriaAdministraoRH',
+        'TITOOLSTI',
+        'ReembolsoComumreembolso',
+        'ReembolsoGestorreembolso',
+        'ReembolsoContabilidadereembolso',
+        'ReembolsoAdministraoreembolso',
         'id_departamento',
     ];
 
@@ -68,5 +89,10 @@ class UserExternal extends Model
     public function departamento()
     {
         return $this->belongsTo(Departament::class, 'id_departamento');
+    }
+
+    public function aprovadores()
+    {
+        return $this->hasMany(Aprovador::class, 'id_user');
     }
 }

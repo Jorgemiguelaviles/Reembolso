@@ -12,25 +12,16 @@ use Illuminate\Support\Facades\Mail;
 
 class solicitcaoEditSubmit extends Controller
 {
-
-
-
-
     public function solicitcaoEditSubmit(Request $request)
     {
-
         function gerarNomeAleatorio()
         {
-            // Obtém a data e hora atual
             $dataHoraAtual = Carbon::now();
-            // Formata a data e hora atual para o formato desejado
             $nomeAleatorio = $dataHoraAtual->format('YmdHisv');
-
-            // Adiciona uma parte aleatória ao nome para garantir unicidade
             $nomeAleatorio .= "_" . uniqid();
-
             return $nomeAleatorio;
         }
+
         $rules = [
             '0' => 'required|string',
             '1' => 'nullable|string',
@@ -51,16 +42,12 @@ class solicitcaoEditSubmit extends Controller
         $dadosParaEnviar = $request->input('dadosParaEnviar');
         $camposDoBanco1 = $camposDoBanco['camposDoBanco'];
 
-
         $designationName = $camposDoBanco1[13] ?? null;
         $inputbool = $camposDoBanco1[14] ?? null;
-
 
         if ($designationName && $inputbool) {
             $rules[13] = 'nullable|string';
         }
-
-
 
         $rules2 = [
             'data' => 'required|date',
@@ -72,67 +59,33 @@ class solicitcaoEditSubmit extends Controller
             'itsdolar' => 'required|string'
         ];
 
-
-
-
         $Somavalue = 0;
         foreach ($dadosParaEnviar as $index => $value) {
-            $Somavalue = $Somavalue + $value['total'];
+            $Somavalue += $value['total'];
         }
-
-
 
         $validator = Validator::make($camposDoBanco1, $rules);
         if ($validator->fails()) {
-            // Retorna uma resposta com os erros de validação
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
         $gestor = $camposDoBanco1[4] ?? null;
         $nomeSolicitante = $camposDoBanco1[10] ?? null;
         $emailContabilidadeResponsavel = UserExternal::where('ReembolsoContabilidadereembolso', true)->pluck('email');
-        //$emailContabilidadeResponsavel =['jorge.ti@alpina.com.br'];
-
-        foreach ($emailContabilidadeResponsavel as $index => $email) {
-            if ($email != null) {
-                $email = $email;
-
-
-                Mail::send('usuarioEditaSolicitacaoParaContabilidade', ['usuario' => $nomeSolicitante], function ($message) use ($email) {
-                    $message->to($email);
-                    $message->subject('Atualizacao de Status');
-                    $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
-                });
-            }
-        }
-
 
         $objetivo = $camposDoBanco1[0] ?? null;
         $obra = $camposDoBanco1[1] ?? 'Uso em consumo';
         $departamento = $camposDoBanco1[2] ?? null;
         $cpf = $camposDoBanco1[3] ?? null;
-
         $Centrodecustos = $camposDoBanco1[5] ?? null;
         date_default_timezone_set('America/Sao_Paulo');
         $dataLocal = date('Y-m-d H:i:s');
         $Periodo = $camposDoBanco1[6] ?? null;
         $ate = $camposDoBanco1[7] ?? null;
-        //$direcionadoAoCentroDeCusto = $camposDoBanco1[8] ?? null;
         $Chapa = $camposDoBanco1[9] ?? null;
-
         $acesso = $camposDoBanco1[11] ?? null;
         $tipoDeEmpresa = $camposDoBanco1[12] ?? null;
-
         $cabecalhoId = $request->query('parametro');
-
-        $all = $request->all();
-
-
-
-
-
-
-
         $status = 'Pendente';
 
         if ($acesso === 'ContabilidadeRembolso') {
@@ -142,7 +95,6 @@ class solicitcaoEditSubmit extends Controller
         if ($gestor === null) {
             $status = 'Aprovado';
         }
-
 
         $Inforeembolso = Inforeembolso::where('id', $cabecalhoId)->first();
         $Inforeembolso->objetivo = $objetivo;
@@ -161,26 +113,16 @@ class solicitcaoEditSubmit extends Controller
         $Inforeembolso->TipoDeEmpresa = $tipoDeEmpresa;
         $Inforeembolso->ultimaAtualizacao = $nomeSolicitante;
         $Inforeembolso->designationpeople = $designationName ?? $nomeSolicitante;
-
-
         $Inforeembolso->save();
 
         Formulario::where('inforeembolso_id', $cabecalhoId)->update(['active' => false]);
         $maxConjunto = Formulario::where('inforeembolso_id', $cabecalhoId)->max('conjunto');
 
         if ($maxConjunto === null) {
-            $maxConjunto = 1; // Se não houver registros, define como 1
+            $maxConjunto = 1;
         } else {
             $maxConjunto += 1;
         }
-
-
-
-
-
-
-        //analisar Dados para enviar pois nem se tera o $_FILES
-
 
         foreach ($dadosParaEnviar as $index => $type2) {
             $data = $type2['data'];
@@ -193,14 +135,8 @@ class solicitcaoEditSubmit extends Controller
             $pagamento = $type2['pagamento'];
             $direcionadoPara = $type2['direcionadoPara'];
 
-
-
-
-
-
             $validator2 = Validator::make($type2, $rules2);
             if ($validator2->fails()) {
-                // Retorna uma resposta com os erros de validação
                 return response()->json(['errors' => $validator2->errors()], 400);
             }
 
@@ -233,10 +169,8 @@ class solicitcaoEditSubmit extends Controller
                 ]);
 
                 $novoFormulario->save();
-
                 move_uploaded_file($tempname, $nomeTransferencia);
             } else {
-
                 $novoFormulario = new Formulario([
                     'conjunto' => $maxConjunto,
                     'despesa' => $despesa,
@@ -257,10 +191,15 @@ class solicitcaoEditSubmit extends Controller
             }
         }
 
-
-
-
-
+        foreach ($emailContabilidadeResponsavel as $index => $email) {
+            if ($email != null) {
+                Mail::send('usuarioEditaSolicitacaoParaContabilidade', ['usuario' => $nomeSolicitante, 'id_solicitacao' => $cabecalhoId], function ($message) use ($email) {
+                    $message->to($email);
+                    $message->subject('AtualizaÃ§Ã£o de Status');
+                    $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
+                });
+            }
+        }
 
         return response()->json([
             'dadosParaEnviar' => $dadosParaEnviar,

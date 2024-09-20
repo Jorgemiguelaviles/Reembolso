@@ -140,16 +140,10 @@ const Mainpage = () => {
                                 </Link>
                             </div>)}
                     </div>
-
-
                 )}
-
-
-
-
                 <div className="container d-flex flex-row justify-content-center align-items-center mt-5">
                     <Link to="/login">
-                        <Button variant="success" className="px-4 py-2 btn">
+                        <Button variant="success" className="px-4 py-2 btn" style={{ marginBottom: "1rem" }} >
                             Sair
                         </Button>
                     </Link>

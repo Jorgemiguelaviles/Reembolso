@@ -76,7 +76,7 @@ const PDF = () => {
                 setEmpresa(data['dados'][1][0]['TipoDeEmpresa']);
                 setObjetivo(data['dados'][1][0]['objetivo']);
                 setObra(data['dados'][1][0]['obra']);
-                setPeriodoDaDespesa(data['dados'][1][0]['data']);
+                setPeriodoDaDespesa(data['dados'][1][0]['periodo']);
                 setAte(data['dados'][1][0]['ate']);
                 setName(data['dados'][1][0]['Solicitante']);
                 setSolicitante(data['dados'][1][0]['designationpeople'])

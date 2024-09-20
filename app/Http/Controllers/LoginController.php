@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class LoginController extends Controller
 {
+
     public function validarLogin(Request $request)
     {
         $all = $request->all();
@@ -20,18 +21,25 @@ class LoginController extends Controller
         $captcha = $request->input('captcha');
 
 
-        $recaptchaSecretKey = '6LfyLccpAAAAABmE20NgC6RrfkGlM2I0n3Oa0_UU';
+        /*$recaptchaSecretKey = '6LeD-McpAAAAAKcjy3rvEMLCEYSuk3lrGjm1zjHA';
 
 
         $recaptchaVerifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
             'secret' => $recaptchaSecretKey,
             'response' => $captcha,
-        ]);
+        ]);*/
 
 
 
-        // Buscar usuário pelo nome de usuário
-        $user = UserExternal::where('Usuario', $usuario)->first();
+        /*$user = UserExternal::with(['aprovadores' => function ($query) {
+            $query->where('isAprovador', true);
+        }])->where('Usuario', $usuario)->first();*/
+
+        $user = UserExternal::with('aprovadores')->where('Usuario', $usuario)->first();
+
+
+
+
 
 
         if ($user) {
@@ -41,12 +49,17 @@ class LoginController extends Controller
             $gestor = $user['ReembolsoGestorreembolso'];
             $contab = $user['ReembolsoContabilidadereembolso'];
 
-            if (!$recaptchaVerifyResponse['success']) {
+            /*if (!$recaptchaVerifyResponse['success']) {
                 return response()->json(['status' => false, 'message' => 'Falha na verificacao do reCAPTCHA', 'data' => null]);
-            }
+            }*/
 
 
             if (password_verify($senha, $hash)) {
+
+                $id = $user['id'];
+
+
+
                 if ($adminitracao || $comum || $gestor || $contab) {
                     if ($adminitracao) {
                         $tipo = 'AdministracaoRembolso';

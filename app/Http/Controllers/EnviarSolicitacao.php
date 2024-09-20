@@ -10,23 +10,19 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 
-
 class EnviarSolicitacao extends Controller
 {
-    // Método para enviar uma nova solicitação
+    // MÃ©todo para enviar uma nova solicitaÃ§Ã£o
     public function enviarSolicitacao(Request $request)
     {
-
         function gerarNomeAleatorio()
         {
-            // Obtém a data e hora atual
+            // ObtÃ©m a data e hora atual
             $dataHoraAtual = Carbon::now();
             // Formata a data e hora atual para o formato desejado
             $nomeAleatorio = $dataHoraAtual->format('YmdHisv');
-
-            // Adiciona uma parte aleatória ao nome para garantir unicidade
+            // Adiciona uma parte aleatÃ³ria ao nome para garantir unicidade
             $nomeAleatorio .= "_" . uniqid();
-
             return $nomeAleatorio;
         }
 
@@ -44,28 +40,18 @@ class EnviarSolicitacao extends Controller
             '10' => 'required|string',
             '11' => 'required|string',
             '12' => 'required|string',
-
-
         ];
 
         $camposDoBanco = $request->input('camposDoBanco');
         $dadosParaEnviar = $request->input('dadosParaEnviar');
         $camposDoBanco1 = $camposDoBanco['camposDoBanco'];
 
-
         $designationName = $camposDoBanco1[13] ?? null;
         $inputbool = $camposDoBanco1[14] ?? null;
-
 
         if ($designationName && $inputbool) {
             $rules[13] = 'nullable|string';
         }
-
-
-
-
-
-
 
         $rules2 = [
             'data' => 'required|date',
@@ -78,29 +64,16 @@ class EnviarSolicitacao extends Controller
             'pagamento' => 'required|string'
         ];
 
-
-
-        $all = $request->all();
-
-
-
-
-
-
         $validator = Validator::make($camposDoBanco1, $rules);
         if ($validator->fails()) {
-            // Retorna uma resposta com os erros de validação
+            // Retorna uma resposta com os erros de validaÃ§Ã£o
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-
         $Somavalue = 0;
         foreach ($dadosParaEnviar as $index => $value) {
-            $Somavalue = $Somavalue + $value['total'];
+            $Somavalue += $value['total'];
         }
-
-
-
 
         $objetivo = $camposDoBanco1[0] ?? null;
         $obra = $camposDoBanco1[1] ?? 'Uso em consumo';
@@ -108,12 +81,10 @@ class EnviarSolicitacao extends Controller
         $cpf = $camposDoBanco1[3] ?? null;
         $gestor = $camposDoBanco1[4] ?? null;
         $Centrodecustos = $camposDoBanco1[5] ?? null;
-
-
+        $myId = $camposDoBanco1[16] ?? null;
 
         date_default_timezone_set('America/Sao_Paulo');
         $dataLocal = date('Y-m-d H:i:s');
-
 
         $Periodo = $camposDoBanco1[6] ?? null;
         $ate = $camposDoBanco1[7] ?? null;
@@ -122,14 +93,17 @@ class EnviarSolicitacao extends Controller
         $nomeSolicitante = $camposDoBanco1[10];
         $acesso = $camposDoBanco1[11] ?? null;
         $tipoDeEmpresa = $camposDoBanco1[12] ?? null;
+        $list_ids_grupo = $camposDoBanco1[15] ?? null;
 
+        if (is_array($list_ids_grupo)) {
+            // Converte o array em uma string separada por vÃ­rgulas
+            $string_ids_grupo = implode(',', $list_ids_grupo);
+        }
 
         $emailGestorResponsavel = UserExternal::where('Nome', $gestor)->value('email');
+        $idGestorResponsavel = UserExternal::where('Nome', $gestor)->value('id');
         $emailsolicitanteResponsavel = UserExternal::where('Nome', $nomeSolicitante)->value('email');
         $emailContabilidadeResponsavel = UserExternal::where('ReembolsoContabilidadereembolso', true)->pluck('email');
-        //$emailContabilidadeResponsavel = ['jorge.ti@alpina.com.br'];
-
-
 
         $status = 'Pendente';
 
@@ -141,57 +115,16 @@ class EnviarSolicitacao extends Controller
             $status = 'Aprovado';
         }
 
-
-
-
-
-        if ($status === 'Pre-aprovado') {
-            $emailList = array_filter([$emailsolicitanteResponsavel, $emailGestorResponsavel]);
-            if (!empty($emailList)) {
-                try {
-                    Mail::send('contabilidadeAtualizaStatusSemiAprovado', ['usuario' => $nomeSolicitante], function ($message) use ($emailList) {
-                        $message->to($emailList);
-                        $message->subject('Atualização de Status');
-                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
-                    });
-                } catch (\Exception $e) {
-                    return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
-                }
-            }
-        } else {
-            foreach ($emailContabilidadeResponsavel as $index => $email) {
-                if ($email != null) {
-                    $email = $email;
-
-
-                    Mail::send('usuarioCriaSolicitacaoParaContabilidade', ['usuario' => $nomeSolicitante], function ($message) use ($email) {
-                        $message->to($email);
-                        $message->subject('Atualizacao de Status');
-                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
-                    });
-                }
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
         $novoInforeembolso = new Inforeembolso([
+            'id_solicitante' => $myId ?? null,
+            'ids_grupos' => $string_ids_grupo ?? null,
             'objetivo' => $objetivo,
             'status' => $status,
             'obra' => $obra,
             'departamento' => $departamento,
             'cpf' => $cpf,
             'gestor' => $gestor,
+            'id_gestor' => $idGestorResponsavel,
             'centro_de_custo' => $Centrodecustos,
             'data' =>  $dataLocal,
             'periodo' =>  $Periodo,
@@ -202,9 +135,6 @@ class EnviarSolicitacao extends Controller
             'TipoDeEmpresa' => $tipoDeEmpresa,
             'designationpeople' => $designationName ?? $nomeSolicitante,
         ]);
-
-
-
 
         // Salva o novo registro no banco de dados
         $novoInforeembolso->save();
@@ -223,21 +153,13 @@ class EnviarSolicitacao extends Controller
             $pagamento = $type2['pagamento'];
             $direcionadoPara = $type2['direcionadoPara'];
 
-            //return response()->json(['mensagem' => $direcionadoPara], 201);
-
-
-
-
             $validator2 = Validator::make($type2, $rules2);
             if ($validator2->fails()) {
-                // Retorna uma resposta com os erros de validação
+                // Retorna uma resposta com os erros de validaÃ§Ã£o
                 return response()->json(['errors' => $validator2->errors()], 400);
             }
 
-            //return response()->json(['mensagem' => 'Sistema cadastrado com sucesso'], 201);
-
             if (isset($_FILES['dadosParaEnviar']['full_path'][$index]) && !empty($_FILES['dadosParaEnviar']['full_path'][$index])) {
-
                 $extension = pathinfo($_FILES['dadosParaEnviar']['full_path'][$index]['anexos'][0], PATHINFO_EXTENSION);
                 $nome = gerarNomeAleatorio();
                 $tempname = $_FILES['dadosParaEnviar']['tmp_name'][$index]['anexos'][0];
@@ -248,7 +170,6 @@ class EnviarSolicitacao extends Controller
                 $nomeTransferencia = $caminhoTransferencia . $name;
                 $nomeDatabase = $caminhoDataBase . $name;
                 $novoFormulario = new Formulario([
-                    //'direcionado_ao_centro_de_custo'
                     'conjunto' => '1.00',
                     'status' => $status,
                     'despesa' => $despesa,
@@ -266,10 +187,8 @@ class EnviarSolicitacao extends Controller
                 ]);
 
                 $novoFormulario->save();
-
                 move_uploaded_file($tempname, $nomeTransferencia);
             } else {
-
                 $novoFormulario = new Formulario([
                     'conjunto' => '1.00',
                     'despesa' => $despesa,
@@ -289,7 +208,32 @@ class EnviarSolicitacao extends Controller
             }
         }
 
-        // Retornar listas para cada variável
+        if ($status === 'Pre-aprovado') {
+            $emailList = array_filter([$emailsolicitanteResponsavel, $emailGestorResponsavel]);
+            if (!empty($emailList)) {
+                try {
+                    Mail::send('contabilidadeAtualizaStatusSemiAprovado', ['usuario' => $nomeSolicitante, 'id_solicitacao' => $idDoInforeembolso], function ($message) use ($emailList) {
+                        $message->to($emailList);
+                        $message->subject('AtualizaÃ§Ã£o de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
+                    });
+                } catch (\Exception $e) {
+                    return response()->json(['error' => 'Erro ao enviar e-mail: ' . $e->getMessage()], 500);
+                }
+            }
+        } else {
+            foreach ($emailContabilidadeResponsavel as $index => $email) {
+                if ($email != null) {
+                    Mail::send('usuarioCriaSolicitacaoParaContabilidade', ['usuario' => $nomeSolicitante, 'id_solicitacao' => $idDoInforeembolso], function ($message) use ($email) {
+                        $message->to($email);
+                        $message->subject('AtualizaÃ§Ã£o de Status');
+                        $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
+                    });
+                }
+            }
+        }
+
+        // Retornar listas para cada variÃ¡vel
         return response()->json(['mensagem' => 'Sistema cadastrado com sucesso'], 201);
     }
 }

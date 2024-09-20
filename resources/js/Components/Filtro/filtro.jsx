@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import { useUser } from '../../userContext';
 
+function Filtro({ onFiltrar }) {
 
-function Filtro({ onFiltrar, filtros, setFiltros }) {
-
-    console.log(filtros);
+    const { domain, filtros, setFiltros } = useUser();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -11,8 +11,11 @@ function Filtro({ onFiltrar, filtros, setFiltros }) {
     };
 
     const handleFiltrarClick = () => {
+
         onFiltrar(filtros);
     };
+
+
 
     return (
         <div className="container-fluid">

@@ -27,6 +27,7 @@
 
                 <p style="font-size: 16px; line-height: 1.5; color: #666666;">A solicitação do {{ $usuario }} foi pré-aprovada com sucesso.</p>
                 <p style="font-size: 16px; line-height: 1.5; color: #666666;">Favor verificar.</p>
+                <p style="font-size: 16px; line-height: 1.5; color: #666666;">Id da solicitação: {{ $id_solicitacao }}.</p>
 		<p style="font-size: 16px; line-height: 1.5; color: #666666;">
     Link para acesso:
     <a href="http://alpinacloud.com.br:5170/login" style="color: #007bff; text-decoration: none; font-weight: bold;">

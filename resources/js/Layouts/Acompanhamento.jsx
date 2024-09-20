@@ -7,7 +7,7 @@ import useEncaminhar from '../hooks/functions/encaminhar/useEncaminhar';
 import { useCookies } from 'react-cookie';
 import verificarInatividade from '../hooks/functions/verificaCookies/index';
 import { Card } from 'react-bootstrap';
-
+import * as XLSX from 'xlsx';
 
 function Acompanhamento() {
     const { domain } = useUser();
@@ -49,7 +49,6 @@ function Acompanhamento() {
             .then(data => {
                 setreasonforcancellation(data['dados'][1][0]['motivoDoCancelamento'])
                 setsumx(data['dados'][1][0]['SomaTotalDosValores'])
-
                 setSolicitacoes(data['dados'][0]);
             })
             .catch(error => {
@@ -66,7 +65,7 @@ function Acompanhamento() {
                 setItsVersionament('Desktop');
             }
         }
-        // Adicionando um listener de resize para ajustar o state conforme a mudança do tamanho da tela
+        // Adicionando um listener de resize para ajustar o state conforme a mudanÃ§a do tamanho da tela
         window.addEventListener('resize', handleResize);
 
         // Definindo o estado inicial baseado no tamanho da tela quando o componente montar
@@ -95,21 +94,34 @@ function Acompanhamento() {
                 return 'inherit';
         }
     };
+
+    const exportToExcel = () => {
+        const ws = XLSX.utils.json_to_sheet(solicitacoes);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, 'data.xlsx');
+    }
+
+
     if (timeout) {
         return (
             <div>
-                <NavbarReembolso titulo={'Acompanhamento de Solicitações'} Nome={nome} Chapa={chapa} />
-                <div className="container">
-                    <div className="row mt-5 mb-5">
-                        <div className="col">
+                <NavbarReembolso titulo={'Acompanhamento de SolicitaÃ§Ãµes'} Nome={nome} Chapa={chapa} />
+                <button type="button" className="btn btn-success m-3" onClick={exportToExcel}>
+                    Exportar para excel
+                </button>
+                <div>
+                    <div className="mt-5 mb-5">
+                        <div>
                             <div className="table-responsive" style={{ maxHeight: "500px", overflowY: "auto" }}>
-                                <table className="table mt-3">
+                                <table class="text-center table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th scope="col">Data</th>
                                             <th scope="col">Solicitante</th>
+                                            <th scope="col">Direcionado</th>
                                             <th scope="col">Despesa</th>
-                                            <th scope="col">Descrição</th>
+                                            <th scope="col">DescriÃ§Ã£o</th>
                                             <th scope="col">Quantidade</th>
                                             <th scope="col">Anexo</th>
                                             <th scope="col">Valor</th>
@@ -122,15 +134,16 @@ function Acompanhamento() {
                                         {(!solicitacoes) && (
                                             <tr>
                                                 <td colSpan="10" style={{ textAlign: "center" }}>
-                                                    Nenhuma solicitação encontrada
+                                                    Nenhuma solicitaÃ§Ã£o encontrada
                                                 </td>
                                             </tr>
                                         )}
                                         {solicitacoes && (
                                             solicitacoes.map((solicitacao, index) => (
                                                 <tr key={index}>
-                                                   <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{new Date(solicitacao.data).toLocaleDateString('pt-BR')}</td>
+                                                    <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{solicitacao.data}</td>
                                                     <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{solicitacao.Solicitante}</td>
+                                                    <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{solicitacao.direcionado_ao_centro_de_custo}</td>
                                                     <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{solicitacao.despesa}</td>
                                                     <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{solicitacao.descricao}</td>
                                                     <td style={{ backgroundColor: getStatusColor(solicitacao.status) }}>{solicitacao.quantidade}</td>
@@ -163,22 +176,22 @@ function Acompanhamento() {
                         {/* Card para Soma Total */}
                         <Card style={{ marginRight: '20px', width: '300px' }}>
                             <Card.Body>
-                            <Card.Title style={{ textAlign: 'center' }}>Total</Card.Title>
-                            <Card.Text style={{ textAlign: 'center' }}>R$ {sumx}</Card.Text>
+                                <Card.Title style={{ textAlign: 'center' }}>Total</Card.Title>
+                                <Card.Text style={{ textAlign: 'center' }}>R$ {sumx}</Card.Text>
                             </Card.Body>
                         </Card>
 
-                        {/* Renderizar o Card para Motivo do Cancelamento somente se reasonforcancellation não for null */}
+                        {/* Renderizar o Card para Motivo do Cancelamento somente se reasonforcancellation nÃ£o for null */}
                         {reasonforcancellation && (
                             <Card style={{ width: '300px' }}>
                                 <Card.Body>
                                     <Card.Title style={{ textAlign: 'center' }}>Motivo do Cancelamento</Card.Title>
-                                    <Card.Text style={{  whiteSpace: 'pre-wrap' }}>{reasonforcancellation}</Card.Text>
+                                    <Card.Text style={{ whiteSpace: 'pre-wrap' }}>{reasonforcancellation}</Card.Text>
                                 </Card.Body>
                             </Card>
                         )}
                     </div>
-                    <div className="row mt-3">
+                    <div className="mt-3">
                         <div className="col text-center">
                             <Link to="/consulta">
                                 <Button

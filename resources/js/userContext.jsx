@@ -9,7 +9,14 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     const [cookies, setCookie] = useCookies(['user']);
     const [domain, setDomain] = useState('http://alpinacloud.com.br:5170/');
-
+    const [filtros, setFiltros] = useState({
+        filtroNumero: "",
+        filtroAbertoEm: "",
+        filtroAte: "",
+        filtroNumero: "",
+        filtroCentroDeCusto: "",
+        filtroStatus: ""
+    });
 
     // Verificar se cookies é uma array antes de desestruturar
     const user = Array.isArray(cookies) ? cookies[0] : null;
@@ -19,6 +26,8 @@ export const UserProvider = ({ children }) => {
             value={{
                 setCookie,
                 domain,
+                filtros,
+                setFiltros,
             }}
         >
             {children}

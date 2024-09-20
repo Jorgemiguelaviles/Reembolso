@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 class AtualizarStatusController extends Controller
 {
     /**
-     * Retorna uma mensagem básica indicando que está funcionando.
+     * Retorna uma mensagem bÃ¡sica indicando que estÃ¡ funcionando.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -60,7 +60,7 @@ class AtualizarStatusController extends Controller
             if ($emailsolicitanteResponsavel != null) {
                 $email = $emailsolicitanteResponsavel;
                 try {
-                    Mail::send('contabilidadeAtualizaStatusRejeitado', ['usuario' => $solicitanteLine], function ($message) use ($email) {
+                    Mail::send('contabilidadeAtualizaStatusRejeitado', ['usuario' => $solicitanteLine, 'id_solicitacao' => $id], function ($message) use ($email) {
                         $message->to($email);
                         $message->subject('Atualizacao de Status');
                         $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
@@ -73,7 +73,7 @@ class AtualizarStatusController extends Controller
             if ($emailGestorResponsavel != null) {
                 $email = $emailGestorResponsavel;
                 try {
-                    Mail::send('contabilidadeAtualizaStatusRejeitado', ['usuario' => $solicitanteLine], function ($message) use ($email) {
+                    Mail::send('contabilidadeAtualizaStatusRejeitado', ['usuario' => $solicitanteLine, 'id_solicitacao' => $id], function ($message) use ($email) {
                         $message->to($email);
                         $message->subject('Atualizacao de Status');
                         $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
@@ -89,7 +89,7 @@ class AtualizarStatusController extends Controller
             $emailList = array_filter([$emailsolicitanteResponsavel, $emailGestorResponsavel]);
             if (!empty($emailList)) {
                 try {
-                    Mail::send('contabilidadeAtualizaStatusSemiAprovado', ['usuario' => $solicitanteLine], function ($message) use ($emailList) {
+                    Mail::send('contabilidadeAtualizaStatusSemiAprovado', ['usuario' => $solicitanteLine, 'id_solicitacao' => $id], function ($message) use ($emailList) {
                         $message->to($emailList);
                         $message->subject('Atualizacao de Status');
                         $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
@@ -105,7 +105,7 @@ class AtualizarStatusController extends Controller
 
                 if ($email != null) {
                     try {
-                        Mail::send('gestorAtualizaStatusCancela', ['usuario' => $solicitanteLine], function ($message) use ($email) {
+                        Mail::send('gestorAtualizaStatusCancela', ['usuario' => $solicitanteLine, 'id_solicitacao' => $id], function ($message) use ($email) {
                             $message->to($email);
                             $message->subject('Atualizacao de Status');
                             $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
@@ -120,7 +120,7 @@ class AtualizarStatusController extends Controller
             if ($emailsolicitanteResponsavel != null) {
                 $email = $emailsolicitanteResponsavel;
                 try {
-                    Mail::send('gestorAtualizaStatusCancela', ['usuario' => $solicitanteLine], function ($message) use ($email) {
+                    Mail::send('gestorAtualizaStatusCancela', ['usuario' => $solicitanteLine, 'id_solicitacao' => $id], function ($message) use ($email) {
                         $message->to($email);
                         $message->subject('Atualizacao de Status');
                         $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
@@ -133,7 +133,7 @@ class AtualizarStatusController extends Controller
             if ($emailsolicitanteResponsavel != null) {
                 $email = $emailsolicitanteResponsavel;
                 try {
-                    Mail::send('contabilidadeAtualizaStatusFinalizado', ['usuario' => $solicitanteLine], function ($message) use ($email) {
+                    Mail::send('contabilidadeAtualizaStatusFinalizado', ['usuario' => $solicitanteLine, 'id_solicitacao' => $id], function ($message) use ($email) {
                         $message->to($email);
                         $message->subject('Atualizacao de Status');
                         $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
@@ -146,7 +146,7 @@ class AtualizarStatusController extends Controller
             if ($emailGestorResponsavel != null) {
                 $email = $emailGestorResponsavel;
                 try {
-                    Mail::send('contabilidadeAtualizaStatusFinalizado', ['usuario' => $solicitanteLine], function ($message) use ($email) {
+                    Mail::send('contabilidadeAtualizaStatusFinalizado', ['usuario' => $solicitanteLine, 'id_solicitacao' => $id], function ($message) use ($email) {
                         $message->to($email);
                         $message->subject('Atualizacao de Status');
                         $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
@@ -159,7 +159,7 @@ class AtualizarStatusController extends Controller
             foreach ($emailContabilidadeResponsavel as $index => $email) {
                 if ($email != null) {
                     try {
-                        Mail::send('gestorAtualizaStatusAprova', ['usuario' => $solicitanteLine], function ($message) use ($email) {
+                        Mail::send('gestorAtualizaStatusAprova', ['usuario' => $solicitanteLine, 'id_solicitacao' => $id], function ($message) use ($email) {
                             $message->to($email);
                             $message->subject('Atualizacao de Status');
                             $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
@@ -175,7 +175,7 @@ class AtualizarStatusController extends Controller
             if ($emailsolicitanteResponsavel != null) {
                 $email = $emailsolicitanteResponsavel;
                 try {
-                    Mail::send('gestorAtualizaStatusAprova', ['usuario' => $solicitanteLine], function ($message) use ($email) {
+                    Mail::send('gestorAtualizaStatusAprova', ['usuario' => $solicitanteLine, 'id_solicitacao' => $id], function ($message) use ($email) {
                         $message->to($email);
                         $message->subject('Atualizacao de Status');
                         $message->from('notify@alpina.com.br', 'Solicitacao de reembolso');
@@ -189,7 +189,7 @@ class AtualizarStatusController extends Controller
 
 
         if (!$inforeembolso) {
-            return response()->json(['error' => 'Solicitação não encontrada'], 404);
+            return response()->json(['error' => 'SolicitaÃ§Ã£o nÃ£o encontrada'], 404);
         }
 
         $inforeembolso->status = $newStatus;

@@ -10,6 +10,9 @@ class Inforeembolso extends Model
 
     // Lista de atributos
     protected $fillable = [
+        'ids_grupos',
+        'id_gestor',
+        'id_solicitante',
         'TipoDeEmpresa',
         'objetivo',
         'status',
